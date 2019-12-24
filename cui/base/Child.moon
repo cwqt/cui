@@ -30,8 +30,4 @@ class Child extends Generic
 		-- 	.rectangle("line", @px, @py, @pw, @ph)
 		-- 	.setColor(1,1,1,1)
 
-	mousemoved: (x, y) =>
-		@detectHover!
-
-
 return Child
