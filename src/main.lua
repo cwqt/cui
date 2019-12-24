@@ -89,13 +89,7 @@ love.load = function()
         6,
         4
       }, {
-        (function()
-          do
-            local _with_0 = cui.Text("Hello World!", "title")
-            _with_0:applyStyle(BigText)
-            return _with_0
-          end
-        end)(),
+        cui.Text("Hello World!", "title"),
         cui.Child()
       }, "left"),
       cui.Child(),
@@ -109,6 +103,27 @@ love.load = function()
       cui.Child()
     }, "main-row")
   })
+  local x = Infobar2["main-row"]["left"]["title"]
+  x:addEventListener("mousePressed", function()
+    local r, g, b = math.random(100) / 100, math.random(100) / 100, math.random(100) / 100
+    return x:applyStyle({
+      ["background-color"] = {
+        r,
+        g,
+        b
+      }
+    })
+  end)
+  x:addEventListener("keyPressed", function(k)
+    return x:setState({
+      ["value"] = x.state.value .. k
+    })
+  end, "hello")
+  return x:addEventListener("keyPressed", function(k)
+    if k == "escape" then
+      return x:removeEventListener("keyPressed", "hello")
+    end
+  end)
 end
 love.update = function(dt)
   return require("lovebird").update()
@@ -118,10 +133,12 @@ love.mousemoved = function(x, y, dx, dy)
   return Infobar2:mousemoved(x, y)
 end
 love.mousepressed = function(x, y, button)
-  return Infobar:mousepressed(x, y, button)
+  Infobar:mousepressed(x, y, button)
+  return Infobar2:mousepressed(x, y, button)
 end
 love.keypressed = function(k)
   Infobar:keypressed(k)
+  Infobar2:keypressed(k)
   local _exp_0 = k
   if "q" == _exp_0 then
     return love.event.quit()

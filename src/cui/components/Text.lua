@@ -5,7 +5,15 @@ do
   local _parent_0 = Child
   local _base_0 = {
     draw = function(self)
-      return love.graphics.print(self.state.value or "", 0, 0)
+      _class_0.__parent.draw(self)
+      do
+        local _with_0 = love.graphics
+        _with_0.push()
+        _with_0.translate(self.px, self.py)
+        _with_0.print(self.state.value or "", 0, 0)
+        _with_0.pop()
+        return _with_0
+      end
     end
   }
   _base_0.__index = _base_0

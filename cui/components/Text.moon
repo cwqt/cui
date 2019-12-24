@@ -6,6 +6,11 @@ class Text extends Child
 		@setState({"value":value})
 
 	draw: () =>
-		love.graphics.print(@state.value or "", 0, 0)
+		super\draw!
+		with love.graphics
+			.push!
+			.translate(@px, @py)
+			.print(@state.value or "", 0, 0)
+			.pop!
 
 return Text

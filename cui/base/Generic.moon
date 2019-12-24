@@ -6,8 +6,10 @@ class Generic
 			hover: false
 		}
 		@style = {
-			m: {10,10,10,10},
-			p: {10,10,10,10},
+			m: {3,3,3,3},
+			p: {6,6,6,6},
+			"background-color": {0,0,0,0},
+			"font-color": {1,1,1,1}
 		}
 		@events = {
 			["mouseEnter"]: 	{
@@ -60,6 +62,7 @@ class Generic
 			if @state.hover
 				.setColor(1,1,1,0.1)
 				.rectangle("fill", 0, 0, @w, @h)
+				.setColor(1,1,1,1)
 			if @@.__name == "Child"
 				.print(@@.__name .. " " .. tostring(@id) .. "\n #{math.ceil @x}, #{math.ceil @y}", 0,0)
 			.pop!
@@ -83,24 +86,42 @@ class Generic
 	update: (dt) =>
 
 	mousepressed: (x,y,button) =>
-		for event in *@events["mousePressed"] do event(x,y,button)
+		for _, event in pairs(@events["mousePressed"]) do event(x,y,button)
 
 	mousemoved: (x,y,dx,dy) =>
 		@detectHover!
-		for event in *@events["mouseMoved"] do event(x,y,dx,dy)
+		for _, event in pairs(@events["mouseMoved"]) do event(x,y,dx,dy)
 
 	keypressed: (k) =>
-		for event in *@events["keyPressed"] do event(k)
+		for _, event in pairs(@events["keyPressed"]) do event(k)
 
 	keyreleased: (k) =>
-		for event in *@events["keyReleased"] do event(k)
+		for _, event in pairs(@events["keyReleased"]) do event(k)
 
-	applyStyle: () =>
+	applyStyle: (style) =>
+		for k, v in pairs(style)
+			@style[k] = v
 
 	setState: (newState) =>
 		-- print inspect newState
 		for key, value in pairs(newState) do
 			@state[key] = value
+
+	addEventListener: (event, f, id) =>
+		hasEvent = false
+		for k,v in pairs(@events) do if @events[event] then hasEvent = true
+		assert(hasEvent, "No such event listener: #{event}")
+
+		print inspect @events
+		if id
+			@events[event][id] = f
+		else
+			table.insert(@events[event], f)
+		print inspect @events
+
+	removeEventListener: (eventType, id) =>
+		if @events[eventType][id] then
+			@events[eventType][id] = nil
 
 
 return Generic

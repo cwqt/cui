@@ -39,6 +39,7 @@ do
         if self.state.hover then
           _with_0.setColor(1, 1, 1, 0.1)
           _with_0.rectangle("fill", 0, 0, self.w, self.h)
+          _with_0.setColor(1, 1, 1, 1)
         end
         if self.__class.__name == "Child" then
           _with_0.print(self.__class.__name .. " " .. tostring(self.id) .. "\n " .. tostring(math.ceil(self.x)) .. ", " .. tostring(math.ceil(self.y)), 0, 0)
@@ -88,38 +89,55 @@ do
     end,
     update = function(self, dt) end,
     mousepressed = function(self, x, y, button)
-      local _list_0 = self.events["mousePressed"]
-      for _index_0 = 1, #_list_0 do
-        local event = _list_0[_index_0]
+      for _, event in pairs(self.events["mousePressed"]) do
         event(x, y, button)
       end
     end,
     mousemoved = function(self, x, y, dx, dy)
       self:detectHover()
-      local _list_0 = self.events["mouseMoved"]
-      for _index_0 = 1, #_list_0 do
-        local event = _list_0[_index_0]
+      for _, event in pairs(self.events["mouseMoved"]) do
         event(x, y, dx, dy)
       end
     end,
     keypressed = function(self, k)
-      local _list_0 = self.events["keyPressed"]
-      for _index_0 = 1, #_list_0 do
-        local event = _list_0[_index_0]
+      for _, event in pairs(self.events["keyPressed"]) do
         event(k)
       end
     end,
     keyreleased = function(self, k)
-      local _list_0 = self.events["keyReleased"]
-      for _index_0 = 1, #_list_0 do
-        local event = _list_0[_index_0]
+      for _, event in pairs(self.events["keyReleased"]) do
         event(k)
       end
     end,
-    applyStyle = function(self) end,
+    applyStyle = function(self, style)
+      for k, v in pairs(style) do
+        self.style[k] = v
+      end
+    end,
     setState = function(self, newState)
       for key, value in pairs(newState) do
         self.state[key] = value
+      end
+    end,
+    addEventListener = function(self, event, f, id)
+      local hasEvent = false
+      for k, v in pairs(self.events) do
+        if self.events[event] then
+          hasEvent = true
+        end
+      end
+      assert(hasEvent, "No such event listener: " .. tostring(event))
+      print(inspect(self.events))
+      if id then
+        self.events[event][id] = f
+      else
+        table.insert(self.events[event], f)
+      end
+      return print(inspect(self.events))
+    end,
+    removeEventListener = function(self, eventType, id)
+      if self.events[eventType][id] then
+        self.events[eventType][id] = nil
       end
     end
   }
@@ -139,16 +157,28 @@ do
       }
       self.style = {
         m = {
-          10,
-          10,
-          10,
-          10
+          3,
+          3,
+          3,
+          3
         },
         p = {
-          10,
-          10,
-          10,
-          10
+          6,
+          6,
+          6,
+          6
+        },
+        ["background-color"] = {
+          0,
+          0,
+          0,
+          0
+        },
+        ["font-color"] = {
+          1,
+          1,
+          1,
+          1
         }
       }
       self.events = {

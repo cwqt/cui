@@ -25,17 +25,6 @@ love.load = () ->
 		}, "MainRow"
 	}
 
-	-- export Infobar = cui.Container {60,60, 540, 200}, {
-	-- 	cui.Row {4,4,4}, {
-	-- 		cui.Child "Child1"
-	-- 		cui.Child "Child2"
-	-- 		cui.Child "Child3"
-	-- 	}, "MainRow"
-	-- }
-
-	-- print Infobar["MainRow"]["Child2"]\getWorldPosition!
-	-- print Infobar["MainRow"]["Child3"]\getWorldPosition!
-
 	Helvetica = cui.Font("Roboto.ttf")
 	BigText = cui.Style({
 		"font-family": Helvetica,
@@ -50,8 +39,8 @@ love.load = () ->
 		cui.Row {1,3, 4, 3,1}, {
 			cui.Child!
 			cui.Column {6,4}, {
-				with cui.Text "Hello World!", "title"
-					\applyStyle(BigText)
+				cui.Text "Hello World!", "title"
+					-- \applyStyle(BigText)
 				cui.Child!			
 			}, "left"
 			cui.Child!
@@ -63,8 +52,19 @@ love.load = () ->
 		}, "main-row"
 	}
 
-	-- cui.Timer\after 2, ->
-	-- 	Infobar2["main-row"]["left"]["title"]\setState({"value":"Changed!"})
+	x = Infobar2["main-row"]["left"]["title"]
+
+	x\addEventListener "mousePressed",
+		->
+			r,g,b = math.random(100)/100, math.random(100)/100, math.random(100)/100
+			x\applyStyle({"background-color":{r,g,b}})
+
+	x\addEventListener "keyPressed",
+		(k) -> x\setState({"value":x.state.value .. k}),
+		"hello"
+
+	x\addEventListener "keyPressed",
+		(k) -> if k == "escape" then x\removeEventListener("keyPressed", "hello")
 
 
 love.update = (dt) ->
@@ -76,9 +76,11 @@ love.mousemoved = (x, y, dx, dy) ->
 
 love.mousepressed = (x,y,button) ->
 	Infobar\mousepressed(x,y,button)
+	Infobar2\mousepressed(x, y, button)
 
 love.keypressed = (k) ->
 	Infobar\keypressed(k)
+	Infobar2\keypressed(k)
 
 	switch k
 		when "q"
