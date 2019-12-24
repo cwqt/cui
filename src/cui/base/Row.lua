@@ -26,14 +26,6 @@ do
     end,
     draw = function(self)
       return _class_0.__parent.draw(self)
-    end,
-    mousemoved = function(self, x, y)
-      self:detectHover()
-      if self.state.hover then
-        for k, child in pairs(self.children) do
-          child:mousemoved(x, y)
-        end
-      end
     end
   }
   _base_0.__index = _base_0

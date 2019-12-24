@@ -4,6 +4,14 @@ do
   local _class_0
   local _parent_0 = Generic
   local _base_0 = {
+    update = function(self, dt)
+      _class_0.__parent.update(self, dt)
+      local _list_0 = self.children
+      for _index_0 = 1, #_list_0 do
+        local child = _list_0[_index_0]
+        child:update(dt)
+      end
+    end,
     draw = function(self)
       _class_0.__parent.draw(self)
       do
@@ -17,11 +25,54 @@ do
         return _with_0
       end
     end,
+    mousepressed = function(self, x, y, button)
+      for k, child in pairs(self.children) do
+        child:mousepressed(x, y, button)
+      end
+    end,
     mousemoved = function(self, x, y)
-      self:detectHover()
+      _class_0.__parent.mousemoved(self, x, y)
       if self.state.hover then
-        for k, child in pairs(self.children) do
+        local _list_0 = self.children
+        for _index_0 = 1, #_list_0 do
+          local child = _list_0[_index_0]
           child:mousemoved(x, y)
+        end
+      end
+    end,
+    mousepressed = function(self, x, y, button)
+      _class_0.__parent.mousepressed(self, x, y, button)
+      if self.state.hover then
+        local _list_0 = self.children
+        for _index_0 = 1, #_list_0 do
+          local child = _list_0[_index_0]
+          if child.state.hover then
+            child:mousepressed(x, y, button)
+          end
+        end
+      end
+    end,
+    keypressed = function(self, k)
+      _class_0.__parent.keypressed(self, k)
+      if self.state.hover then
+        local _list_0 = self.children
+        for _index_0 = 1, #_list_0 do
+          local child = _list_0[_index_0]
+          if child.state.hover or self.selectedElement == child then
+            child:keypressed(k)
+          end
+        end
+      end
+    end,
+    keyreleased = function(self, k)
+      _class_0.__parent.keyreleased(self, k)
+      if self.state.hover then
+        local _list_0 = self.children
+        for _index_0 = 1, #_list_0 do
+          local child = _list_0[_index_0]
+          if child.state.hover or self.selectedElement == child then
+            child:keyreleased(k)
+          end
         end
       end
     end
@@ -33,6 +84,7 @@ do
       self.children = children
       _class_0.__parent.__init(self, params, ...)
       self.isParent = true
+      self.selectedElement = nil
       for k, child in pairs(self.children) do
         child.parent = self
         child.key = k

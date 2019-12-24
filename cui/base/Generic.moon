@@ -20,8 +20,12 @@ class Generic
 				(x,y) -> @drillState({"hover":false})
 			}
 			["mouseMoved"]:  	{}
-			["mousePressed"]: {}
-			["keyPressed"]:  	{}
+			["mousePressed"]: {
+				(x,y,button) -> print("click", @id or @@.__name, button, x, y)
+			}
+			["keyPressed"]:  	{
+				(k) -> print("press", @id or @@.__name, k)
+			}
 			["keyReleased"]: 	{}
 		}
 
@@ -33,6 +37,7 @@ class Generic
 					child\drillState(state)
 				else
 					child\setState(state)
+		@setState(state)			
 
 	getWorldPosition: () =>
 		f = (x, y, currentNode) ->
@@ -75,11 +80,21 @@ class Generic
 			for f in *@events["mouseExit"] do f(x,y)
 		return false
 
-	update: () =>
-	mousepressed: () =>
-	mousemoved: () =>
-	keypressed: () =>
-	keyreleased: () =>
+	update: (dt) =>
+
+	mousepressed: (x,y,button) =>
+		for event in *@events["mousePressed"] do event(x,y,button)
+
+	mousemoved: (x,y,dx,dy) =>
+		@detectHover!
+		for event in *@events["mouseMoved"] do event(x,y,dx,dy)
+
+	keypressed: (k) =>
+		for event in *@events["keyPressed"] do event(k)
+
+	keyreleased: (k) =>
+		for event in *@events["keyReleased"] do event(k)
+
 	applyStyle: () =>
 
 	setState: (newState) =>

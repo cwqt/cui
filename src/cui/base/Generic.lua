@@ -13,6 +13,7 @@ do
           end
         end
       end
+      return self:setState(state)
     end,
     getWorldPosition = function(self)
       local f
@@ -85,11 +86,36 @@ do
       end
       return false
     end,
-    update = function(self) end,
-    mousepressed = function(self) end,
-    mousemoved = function(self) end,
-    keypressed = function(self) end,
-    keyreleased = function(self) end,
+    update = function(self, dt) end,
+    mousepressed = function(self, x, y, button)
+      local _list_0 = self.events["mousePressed"]
+      for _index_0 = 1, #_list_0 do
+        local event = _list_0[_index_0]
+        event(x, y, button)
+      end
+    end,
+    mousemoved = function(self, x, y, dx, dy)
+      self:detectHover()
+      local _list_0 = self.events["mouseMoved"]
+      for _index_0 = 1, #_list_0 do
+        local event = _list_0[_index_0]
+        event(x, y, dx, dy)
+      end
+    end,
+    keypressed = function(self, k)
+      local _list_0 = self.events["keyPressed"]
+      for _index_0 = 1, #_list_0 do
+        local event = _list_0[_index_0]
+        event(k)
+      end
+    end,
+    keyreleased = function(self, k)
+      local _list_0 = self.events["keyReleased"]
+      for _index_0 = 1, #_list_0 do
+        local event = _list_0[_index_0]
+        event(k)
+      end
+    end,
     applyStyle = function(self) end,
     setState = function(self, newState)
       for key, value in pairs(newState) do
@@ -152,8 +178,16 @@ do
           end
         },
         ["mouseMoved"] = { },
-        ["mousePressed"] = { },
-        ["keyPressed"] = { },
+        ["mousePressed"] = {
+          function(x, y, button)
+            return print("click", self.id or self.__class.__name, button, x, y)
+          end
+        },
+        ["keyPressed"] = {
+          function(k)
+            return print("press", self.id or self.__class.__name, k)
+          end
+        },
         ["keyReleased"] = { }
       }
     end,

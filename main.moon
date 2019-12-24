@@ -6,7 +6,7 @@ export inspect = require 'cui.libs.inspect'
 love.load = () ->
 	os.execute("clear")
 	print("cui\n")
-	love.window.setMode(660, 260, {highdpi:true, x:400, y:300})
+	love.window.setMode(660, 490, {highdpi:true, x:400, y:300})
 	export circle = love.graphics.newImage "circle.png"
 
 	export Infobar = cui.Container {30, 30, 600, 200}, {
@@ -36,32 +36,32 @@ love.load = () ->
 	-- print Infobar["MainRow"]["Child2"]\getWorldPosition!
 	-- print Infobar["MainRow"]["Child3"]\getWorldPosition!
 
-	-- Helvetica = cui.Font("Roboto.ttf")
-	-- BigText = cui.Style({
-	-- 	"font-family": Helvetica,
-	-- 	"font-size": 40,
-	-- 	"font-color": {1,1,0,1},
-	-- 	"background-color": {1,1,1,1},
-	-- 	"margin": {10, 20, 30, 40},
-	-- 	"padding": {5,5,5,5},
-	-- })
+	Helvetica = cui.Font("Roboto.ttf")
+	BigText = cui.Style({
+		"font-family": Helvetica,
+		"font-size": 40,
+		"font-color": {1,1,0,1},
+		"background-color": {1,1,1,1},
+		"margin": {10, 20, 30, 40},
+		"padding": {5,5,5,5},
+	})
 
-	-- export Infobar2 = cui.Container {30, 260, 600, 200}, {
-	-- 	cui.Row {1,3, 4, 3,1}, {
-	-- 		cui.Child!
-	-- 		cui.Column {6,4}, {
-	-- 			with cui.Text "Hello World!", "title"
-	-- 				\applyStyle(BigText)
-	-- 			cui.Child!			
-	-- 		}, "left"
-	-- 		cui.Child!
-	-- 		cui.Column {6,4}, {
-	-- 			cui.Child!
-	-- 			cui.Child!			
-	-- 		}
-	-- 		cui.Child!			
-	-- 	}, "main-row"
-	-- }
+	export Infobar2 = cui.Container {30, 260, 600, 200}, {
+		cui.Row {1,3, 4, 3,1}, {
+			cui.Child!
+			cui.Column {6,4}, {
+				with cui.Text "Hello World!", "title"
+					\applyStyle(BigText)
+				cui.Child!			
+			}, "left"
+			cui.Child!
+			cui.Column {6,4}, {
+				cui.Child!
+				cui.Child!			
+			}
+			cui.Child!			
+		}, "main-row"
+	}
 
 	-- cui.Timer\after 2, ->
 	-- 	Infobar2["main-row"]["left"]["title"]\setState({"value":"Changed!"})
@@ -72,9 +72,14 @@ love.update = (dt) ->
 
 love.mousemoved = (x, y, dx, dy) ->
 	Infobar\mousemoved(x, y)
-	-- Infobar2\mousemoved(x, y)
+	Infobar2\mousemoved(x, y)
+
+love.mousepressed = (x,y,button) ->
+	Infobar\mousepressed(x,y,button)
 
 love.keypressed = (k) ->
+	Infobar\keypressed(k)
+
 	switch k
 		when "q"
 			love.event.quit!
@@ -84,6 +89,6 @@ love.draw = () ->
 	mx, my = love.mouse.getPosition()
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.print("#{mx}, #{my}", mx+10, my-10)
-	-- Infobar2\draw()
+	Infobar2\draw()
 	-- love.graphics.setBackgroundColor(0.2,0.2,0.2,1)
 	-- love.graphics.draw(circle, 0, 0)

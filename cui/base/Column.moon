@@ -25,10 +25,4 @@ class Column extends Container
 	draw: () =>
 		super\draw!
 
-	mousemoved: (x, y) =>
-		@detectHover!
-		if @state.hover
-			for k, child in pairs(@children) do
-				child\mousemoved(x, y)
-
 return Column
