@@ -10,6 +10,7 @@ local cui = {
   Row = require(... .. ".base.Row"),
   Column = require(... .. ".base.Column"),
   Child = require(... .. ".base.Child"),
-  Text = require(... .. ".components.Text")
+  Text = require(... .. ".components.Text"),
+  Image = require(... .. ".components.Image")
 }
 return cui

@@ -17,6 +17,7 @@ do
       local sx = 0
       for k, child in pairs(self.children) do
         child.parent = self
+        child.key = k
         child.w = (self.w / 12) * self.childDimensions[k]
         child.h = self.h
         child.x = sx

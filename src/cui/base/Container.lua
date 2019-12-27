@@ -25,6 +25,34 @@ do
         return _with_0
       end
     end,
+    getChildren = function(self)
+      return self.children
+    end,
+    getAllElements = function(self)
+      local t = { }
+      local f
+      f = function(node)
+        if node.isParent then
+          for _, child in pairs(node.children) do
+            f(child)
+          end
+        end
+        return table.insert(t, node)
+      end
+      f(self)
+      return t
+    end,
+    getElementById = function(self, id)
+      local t = { }
+      local e = self:getAllElements()
+      for _index_0 = 1, #e do
+        local child = e[_index_0]
+        if child.id == id then
+          t[#t + 1] = child
+        end
+      end
+      return t
+    end,
     mousepressed = function(self, x, y, button)
       for k, child in pairs(self.children) do
         child:mousepressed(x, y, button)
@@ -85,10 +113,12 @@ do
       _class_0.__parent.__init(self, params, ...)
       self.isParent = true
       self.selectedElement = nil
-      for k, child in pairs(self.children) do
-        child.parent = self
-        child.key = k
-        child:instantiate()
+      if self.__class.__name == "Container" then
+        for k, child in pairs(self.children) do
+          child.parent = self
+          child.key = k
+          child:instantiate()
+        end
       end
     end,
     __base = _base_0,

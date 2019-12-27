@@ -2,16 +2,19 @@ cui
 ---
 practical löve ui library.
 
-To see cui in action, open the demo with LÖVE from the base directory:
+![](https://ftp.cass.si/s0=Ymz021.png)
+
+_cui_ is written in MoonScript and requires the [compiler](https://moonscript.org/#installation) to process into Lua for use with LÖVE.  
+To see cui in action, use the executable from the base directory:
 
 ```
-love .
+./run.sh -c
 ```
 
 Table of Contents
 =================
 
-- [cui](#)
+- [_cui_](#)
 	- [Font]()
 	- [Style]()
 	- [Generic]()
@@ -23,7 +26,7 @@ Table of Contents
 			- [`isParent`]()
 		- [Functions]()
 			- [`drillState(state)`]()
-			- [`getWorldPosition()`]()
+			- [`getWorldPosition!`]()
 			- [`detectHover(x,y,w,h)`]()
 			- [`setState({key:value})`]()
 	- [Container]()
@@ -35,6 +38,9 @@ Table of Contents
 			- [`mousemoved(x,y,dx,dy)`]()
 			- [`keypressed(k)`]()
 			- [`keyreleased(k)`]()
+			- [`getAllElements!`]()
+			- [`getElementById(id)`]()
+			- [`getChildren!`]()
 	-  [Row]()
 		- [Functions]()
 			- [`instantiate`]()
@@ -45,3 +51,20 @@ Table of Contents
 		- [Parameters]()
 			- [`parent`]()
 			- [`key`]()
+
+- [Components]()
+	- [Text]()
+	- [Button]()
+	- [TextInput]()
+	- [CheckBox]()
+	- [Image]()
+	- [Slider]()
+	- [Drawable]()
+
+### Text
+### Button
+### TextInput
+### CheckBox
+### Image
+### Slider
+### Drawable

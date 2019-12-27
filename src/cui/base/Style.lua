@@ -1,10 +1,29 @@
 local Style
 do
   local _class_0
-  local _base_0 = { }
+  local _base_0 = {
+    returnAsStyle = function(self)
+      return self.settings
+    end
+  }
   _base_0.__index = _base_0
   _class_0 = setmetatable({
-    __init = function(self, settings) end,
+    __init = function(self, settings)
+      if settings.margin then
+        settings.m = settings.margin
+        settings.margin = nil
+      end
+      if settings.padding then
+        settings.p = settings.padding
+        settings.padding = nil
+      end
+      if settings.font_family then
+        local font_object = settings.font_family
+        local f = font_object:generateNewSize(settings.font_size or 16, settings.font_style or nil)
+        settings.font = f
+      end
+      self.settings = settings
+    end,
     __base = _base_0,
     __name = "Style"
   }, {

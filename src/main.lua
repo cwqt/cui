@@ -9,7 +9,6 @@ love.load = function()
     x = 400,
     y = 300
   })
-  circle = love.graphics.newImage("circle.png")
   Infobar = cui.Container({
     30,
     30,
@@ -17,59 +16,99 @@ love.load = function()
     200
   }, {
     cui.Row({
+      3,
       2,
-      4,
-      4,
-      2
+      3,
+      4
     }, {
-      cui.Child("StartChild"),
-      cui.Child("Child2"),
+      (function()
+        do
+          local _with_0 = cui.Image("assets/seacow.jpg")
+          _with_0:applyStyle({
+            object_fit = "fill"
+          })
+          return _with_0
+        end
+      end)(),
+      (function()
+        do
+          local _with_0 = cui.Image("assets/seacow.jpg")
+          _with_0:applyStyle({
+            object_fit = "contain"
+          })
+          return _with_0
+        end
+      end)(),
+      (function()
+        do
+          local _with_0 = cui.Image("assets/seacow.jpg")
+          _with_0:applyStyle({
+            object_fit = "cover"
+          })
+          return _with_0
+        end
+      end)(),
       cui.Column({
         4,
         4,
         4
       }, {
-        cui.Child("Child3"),
-        cui.Child("Child4"),
-        cui.Row({
-          6,
-          6
-        }, {
-          cui.Child("Child5"),
-          cui.Child("Child6")
-        }, "BottomRow")
-      }, "Column"),
-      cui.Child("EndChild")
-    }, "MainRow")
+        (function()
+          do
+            local _with_0 = cui.Image("assets/seacow.jpg")
+            _with_0:applyStyle({
+              object_fit = "fill"
+            })
+            return _with_0
+          end
+        end)(),
+        (function()
+          do
+            local _with_0 = cui.Image("assets/seacow.jpg")
+            _with_0:applyStyle({
+              object_fit = "contain"
+            })
+            return _with_0
+          end
+        end)(),
+        (function()
+          do
+            local _with_0 = cui.Image("assets/seacow.jpg")
+            _with_0:applyStyle({
+              object_fit = "cover"
+            })
+            return _with_0
+          end
+        end)()
+      })
+    })
   })
-  local Helvetica = cui.Font("Roboto.ttf")
+  local Roboto = cui.Font("assets/Roboto.ttf", {
+    bold = "assets/Roboto-Bold.ttf",
+    italic = "assets/Roboto-Italic.ttf"
+  })
   local BigText = cui.Style({
-    ["font-family"] = Helvetica,
-    ["font-size"] = 40,
-    ["font-color"] = {
-      1,
-      1,
-      0,
-      1
-    },
-    ["background-color"] = {
+    font_family = Roboto,
+    font_size = 40,
+    font_style = "bold",
+    word_wrap = "break_word",
+    font_color = {
       1,
       1,
       1,
       1
     },
-    ["margin"] = {
-      10,
-      20,
-      30,
-      40
-    },
-    ["padding"] = {
-      5,
-      5,
-      5,
-      5
+    char_offsety = -10,
+    background_color = {
+      .2,
+      .2,
+      .2,
+      1
     }
+  }):returnAsStyle()
+  local ImageFit = cui.Style({
+    width = 100,
+    height = 100
   })
   Infobar2 = cui.Container({
     30,
@@ -85,14 +124,13 @@ love.load = function()
       1
     }, {
       cui.Child(),
-      cui.Column({
-        6,
-        4
-      }, {
-        cui.Text("Hello World!", "title"),
-        cui.Child()
-      }, "left"),
-      cui.Child(),
+      (function()
+        do
+          local _with_0 = cui.Text("<b><red>Hello</red></b> World! This is <green>cui!</green>", "title")
+          _with_0:applyStyle(BigText)
+          return _with_0
+        end
+      end)(),
       cui.Column({
         6,
         4
@@ -103,8 +141,8 @@ love.load = function()
       cui.Child()
     }, "main-row")
   })
-  local x = Infobar2["main-row"]["left"]["title"]
-  x:addEventListener("mousePressed", function()
+  local x = Infobar2:getElementById("title")[1]
+  return x:addEventListener("mousepressed", function()
     local r, g, b = math.random(100) / 100, math.random(100) / 100, math.random(100) / 100
     return x:applyStyle({
       ["background-color"] = {
@@ -113,16 +151,6 @@ love.load = function()
         b
       }
     })
-  end)
-  x:addEventListener("keyPressed", function(k)
-    return x:setState({
-      ["value"] = x.state.value .. k
-    })
-  end, "hello")
-  return x:addEventListener("keyPressed", function(k)
-    if k == "escape" then
-      return x:removeEventListener("keyPressed", "hello")
-    end
   end)
 end
 love.update = function(dt)
@@ -145,9 +173,11 @@ love.keypressed = function(k)
   end
 end
 love.draw = function()
+  local stats = love.graphics.getStats()
+  love.graphics.print("draws: " .. tostring(stats.drawcalls) .. ", txtmem: " .. tostring(stats.texturememory / 1024) .. "kB, imgs: " .. tostring(stats.images) .. ", fnts: " .. tostring(stats.fonts) .. ", rawmem: " .. tostring(math.floor(collectgarbage('count'))) .. "kB", 10, 3)
   Infobar:draw()
+  Infobar2:draw()
   local mx, my = love.mouse.getPosition()
   love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.print(tostring(mx) .. ", " .. tostring(my), mx + 10, my - 10)
-  return Infobar2:draw()
+  return love.graphics.print(tostring(mx) .. ", " .. tostring(my), mx + 10, my - 10)
 end

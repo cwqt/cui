@@ -1,25 +1,21 @@
 Generic = require (...)\match("(.+)%.[^%.]+$") .. ".Generic"
 
-accepted_styles = {
-	"margin",
-	"padding",
-	"background-color",
-} 
-
 class Child extends Generic
 	new: (...) =>
 		super(nil, ...)
 
 	instantiate: () =>
 		super\instantiate!
-		@mx = @x + @style.m[4]
-		@my = @y + @style.m[1]
-		@mw = @w - (@style.m[2] + @style.m[4])
-		@mh = @h - (@style.m[1] + @style.m[3])
-		@px = @mx + @style.p[4]
-		@py = @my + @style.p[1]
-		@pw = @mw - (@style.p[2] + @style.p[4])
-		@ph = @mh - (@style.p[1] + @style.p[3])
+		m = @getStyle("m")
+		p = @getStyle("p")
+		@mx = @x + m[4]
+		@my = @y + m[1]
+		@mw = @w - (m[2] + m[4])
+		@mh = @h - (m[1] + m[3])
+		@px = @mx + p[4]
+		@py = @my + p[1]
+		@pw = @mw - (p[2] + p[4])
+		@ph = @mh - (p[1] + p[3])
 
 	draw: () =>
 		super\draw()
@@ -29,9 +25,13 @@ class Child extends Generic
 			.setColor(0.2,1,1,1)
 			.rectangle("line", @px, @py, @pw, @ph)
 			.setColor(1,1,1,1)
-			.setColor(@style["background-color"])
+			.setColor(@getStyle("background_color"))
 			.rectangle("fill", @mx,@my,@mw,@mh)
 			.setColor(1,1,1,1)
+
+			if @getStyle("overflow") == "hidden"
+				x, y = @getWorldPosition!
+				.setScissor(x+(@px-@x), y+(@py-@y), @pw, @ph)
 
 
 return Child

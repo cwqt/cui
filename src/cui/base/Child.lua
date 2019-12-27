@@ -1,9 +1,4 @@
 local Generic = require((...):match("(.+)%.[^%.]+$") .. ".Generic")
-local accepted_styles = {
-  "margin",
-  "padding",
-  "background-color"
-}
 local Child
 do
   local _class_0
@@ -11,14 +6,16 @@ do
   local _base_0 = {
     instantiate = function(self)
       _class_0.__parent.instantiate(self)
-      self.mx = self.x + self.style.m[4]
-      self.my = self.y + self.style.m[1]
-      self.mw = self.w - (self.style.m[2] + self.style.m[4])
-      self.mh = self.h - (self.style.m[1] + self.style.m[3])
-      self.px = self.mx + self.style.p[4]
-      self.py = self.my + self.style.p[1]
-      self.pw = self.mw - (self.style.p[2] + self.style.p[4])
-      self.ph = self.mh - (self.style.p[1] + self.style.p[3])
+      local m = self:getStyle("m")
+      local p = self:getStyle("p")
+      self.mx = self.x + m[4]
+      self.my = self.y + m[1]
+      self.mw = self.w - (m[2] + m[4])
+      self.mh = self.h - (m[1] + m[3])
+      self.px = self.mx + p[4]
+      self.py = self.my + p[1]
+      self.pw = self.mw - (p[2] + p[4])
+      self.ph = self.mh - (p[1] + p[3])
     end,
     draw = function(self)
       _class_0.__parent.draw(self)
@@ -29,9 +26,13 @@ do
         _with_0.setColor(0.2, 1, 1, 1)
         _with_0.rectangle("line", self.px, self.py, self.pw, self.ph)
         _with_0.setColor(1, 1, 1, 1)
-        _with_0.setColor(self.style["background-color"])
+        _with_0.setColor(self:getStyle("background_color"))
         _with_0.rectangle("fill", self.mx, self.my, self.mw, self.mh)
         _with_0.setColor(1, 1, 1, 1)
+        if self:getStyle("overflow") == "hidden" then
+          local x, y = self:getWorldPosition()
+          _with_0.setScissor(x + (self.px - self.x), y + (self.py - self.y), self.pw, self.ph)
+        end
         return _with_0
       end
     end

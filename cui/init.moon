@@ -13,6 +13,7 @@ cui = {
   Child:				require(... .. ".base.Child")
 
   Text:					require(... .. ".components.Text")
+  Image:        require(... .. ".components.Image")
 }
 
 return cui

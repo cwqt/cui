@@ -5,10 +5,13 @@ class Container extends Generic
 		super(params, ...)
 		@isParent = true
 		@selectedElement = nil
-		for k, child in pairs(@children) do
-			child.parent = self
-			child.key = k
-			child\instantiate!
+
+		--Don't drill instantiate to non-child children
+		if @@.__name == "Container" 
+			for k, child in pairs(@children) do
+				child.parent = self
+				child.key = k
+				child\instantiate!
 
 	update: (dt) =>
 		super\update(dt)
@@ -23,6 +26,25 @@ class Container extends Generic
 			for k, child in pairs(@children) do
 				child\draw()
 			.pop!
+
+	getChildren: () => return @children
+
+	getAllElements: () =>
+		t = {}
+		f = (node) ->
+			if node.isParent
+				for _, child in pairs(node.children)
+					f(child)
+			table.insert(t, node)
+		f(self)
+		return t
+
+	getElementById: (id) =>
+		t = {}
+		e = @getAllElements!
+		for child in *e do
+			if child.id == id then t[#t+1] = child
+		return t
 
 	mousepressed: (x,y,button) =>
 		for k, child in pairs(@children)

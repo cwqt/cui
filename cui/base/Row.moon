@@ -16,6 +16,7 @@ class Row extends Container
 		sx = 0
 		for k, child in pairs(@children)
 			child.parent = self
+			child.key = k
 			child.w = (@w/12) * @childDimensions[k]
 			child.h = @h
 			child.x = sx

@@ -6,29 +6,31 @@ class Generic
 			hover: false
 		}
 		@style = {
-			m: {3,3,3,3},
-			p: {6,6,6,6},
-			"background-color": {0,0,0,0},
-			"font-color": {1,1,1,1}
+			__default: {
+				m: 					{3,3,3,3},
+				p: 					{6,6,6,6},
+				background_color: {0,0,0,0},
+				overflow: "visible"
+			}
 		}
 		@events = {
-			["mouseEnter"]: 	{
+			["mouseenter"]: 	{
 				(x,y) -> print("enter", @id or @@.__name, x, y)
 				(x,y) -> @setState({"hover":true})
 			}
-			["mouseExit"]:  	{
+			["mouseexit"]:  	{
 				(x,y) -> print("exit", @id or @@.__name, x, y)
 				(x,y) -> @setState({"hover":false})
 				(x,y) -> @drillState({"hover":false})
 			}
-			["mouseMoved"]:  	{}
-			["mousePressed"]: {
+			["mousemoved"]:  	{}
+			["mousepressed"]: {
 				(x,y,button) -> print("click", @id or @@.__name, button, x, y)
 			}
-			["keyPressed"]:  	{
+			["keypressed"]:  	{
 				(k) -> print("press", @id or @@.__name, k)
 			}
-			["keyReleased"]: 	{}
+			["keyreleased"]: 	{}
 		}
 
 	drillState: (state) =>
@@ -56,6 +58,7 @@ class Generic
 	draw: () =>
 		with love.graphics
 			.push!
+			.setScissor()
 			.translate(@x, @y)
 			.setColor(1,1,1,.5)
 			.rectangle("line", 0, 0, @w, @h)
@@ -68,7 +71,7 @@ class Generic
 			.pop!
 
 	instantiate: () =>
-		if @id and @parent then @parent[@id] = self
+		-- if @id and @parent then @parent[@id] = self
 
 	detectHover: (x=@x, y=@y, w=@w, h=@h) =>
 		mx, my = love.mouse.getPosition()
@@ -76,31 +79,37 @@ class Generic
 		x, y = @getWorldPosition()
 		if x <= mx and mx <= x+w and y <= my and my <= y+h
 			if @state.hover == false
-				for f in *@events["mouseEnter"] do f(x,y)
+				for f in *@events["mouseenter"] do f(x,y)
 			return true
 
 		if @state.hover == true
-			for f in *@events["mouseExit"] do f(x,y)
+			for f in *@events["mouseexit"] do f(x,y)
 		return false
 
 	update: (dt) =>
 
 	mousepressed: (x,y,button) =>
-		for _, event in pairs(@events["mousePressed"]) do event(x,y,button)
+		for _, event in pairs(@events["mousepressed"]) do event(x,y,button)
 
 	mousemoved: (x,y,dx,dy) =>
 		@detectHover!
-		for _, event in pairs(@events["mouseMoved"]) do event(x,y,dx,dy)
+		for _, event in pairs(@events["mousemoved"]) do event(x,y,dx,dy)
 
 	keypressed: (k) =>
-		for _, event in pairs(@events["keyPressed"]) do event(k)
+		for _, event in pairs(@events["keypressed"]) do event(k)
 
 	keyreleased: (k) =>
-		for _, event in pairs(@events["keyReleased"]) do event(k)
+		for _, event in pairs(@events["keyreleased"]) do event(k)
 
 	applyStyle: (style) =>
-		for k, v in pairs(style)
-			@style[k] = v
+		print inspect style
+		for k, v in pairs(style) do @style[k] = v
+
+	applyDefaultStyle: (style) =>
+		for k,v in pairs(style) do @style.__default[k] = v
+
+	getStyle: (key) =>
+		return @style[key] or @style.__default[key]
 
 	setState: (newState) =>
 		-- print inspect newState
@@ -112,12 +121,10 @@ class Generic
 		for k,v in pairs(@events) do if @events[event] then hasEvent = true
 		assert(hasEvent, "No such event listener: #{event}")
 
-		print inspect @events
 		if id
 			@events[event][id] = f
 		else
 			table.insert(@events[event], f)
-		print inspect @events
 
 	removeEventListener: (eventType, id) =>
 		if @events[eventType][id] then

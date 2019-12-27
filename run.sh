@@ -10,7 +10,7 @@ if [ "$client" -eq 1 ]; then
   rm -rf src
   mkdir src/
   moonc -t src/ .
-  cp circle.png src/circle.png
+  cp -R assets src/assets
   cp -R cui/libs src/cui/libs
   love src/
 else

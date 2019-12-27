@@ -2,14 +2,21 @@ local Font
 do
   local _class_0
   local _base_0 = {
-    generateNewSize = function(self, size)
-      return love.graphics.newFont(self.filename, size)
+    generateNewSize = function(self, size, fontStyle)
+      if not fontStyle then
+        return love.graphics.newFont(self.filename, size)
+      end
+      for k, font in pairs(self.fallbacks) do
+        if fontStyle == k then
+          return love.graphics.newFont(self.fallbacks[fontStyle], size)
+        end
+      end
     end
   }
   _base_0.__index = _base_0
   _class_0 = setmetatable({
-    __init = function(self, filename)
-      self.filename = filename
+    __init = function(self, filename, fallbacks)
+      self.filename, self.fallbacks = filename, fallbacks
     end,
     __base = _base_0,
     __name = "Font"

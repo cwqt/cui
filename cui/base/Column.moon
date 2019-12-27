@@ -16,6 +16,7 @@ class Column extends Container
 		sy = 0
 		for k, child in pairs(@children)
 			child.parent = self
+			child.key = k
 			child.w = @w
 			child.h = (@h/12) * @childDimensions[k]
 			child.y = sy

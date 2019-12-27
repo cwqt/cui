@@ -33,6 +33,7 @@ do
       do
         local _with_0 = love.graphics
         _with_0.push()
+        _with_0.setScissor()
         _with_0.translate(self.x, self.y)
         _with_0.setColor(1, 1, 1, .5)
         _with_0.rectangle("line", 0, 0, self.w, self.h)
@@ -48,11 +49,7 @@ do
         return _with_0
       end
     end,
-    instantiate = function(self)
-      if self.id and self.parent then
-        self.parent[self.id] = self
-      end
-    end,
+    instantiate = function(self) end,
     detectHover = function(self, x, y, w, h)
       if x == nil then
         x = self.x
@@ -70,7 +67,7 @@ do
       x, y = self:getWorldPosition()
       if x <= mx and mx <= x + w and y <= my and my <= y + h then
         if self.state.hover == false then
-          local _list_0 = self.events["mouseEnter"]
+          local _list_0 = self.events["mouseenter"]
           for _index_0 = 1, #_list_0 do
             local f = _list_0[_index_0]
             f(x, y)
@@ -79,7 +76,7 @@ do
         return true
       end
       if self.state.hover == true then
-        local _list_0 = self.events["mouseExit"]
+        local _list_0 = self.events["mouseexit"]
         for _index_0 = 1, #_list_0 do
           local f = _list_0[_index_0]
           f(x, y)
@@ -89,30 +86,39 @@ do
     end,
     update = function(self, dt) end,
     mousepressed = function(self, x, y, button)
-      for _, event in pairs(self.events["mousePressed"]) do
+      for _, event in pairs(self.events["mousepressed"]) do
         event(x, y, button)
       end
     end,
     mousemoved = function(self, x, y, dx, dy)
       self:detectHover()
-      for _, event in pairs(self.events["mouseMoved"]) do
+      for _, event in pairs(self.events["mousemoved"]) do
         event(x, y, dx, dy)
       end
     end,
     keypressed = function(self, k)
-      for _, event in pairs(self.events["keyPressed"]) do
+      for _, event in pairs(self.events["keypressed"]) do
         event(k)
       end
     end,
     keyreleased = function(self, k)
-      for _, event in pairs(self.events["keyReleased"]) do
+      for _, event in pairs(self.events["keyreleased"]) do
         event(k)
       end
     end,
     applyStyle = function(self, style)
+      print(inspect(style))
       for k, v in pairs(style) do
         self.style[k] = v
       end
+    end,
+    applyDefaultStyle = function(self, style)
+      for k, v in pairs(style) do
+        self.style.__default[k] = v
+      end
+    end,
+    getStyle = function(self, key)
+      return self.style[key] or self.style.__default[key]
     end,
     setState = function(self, newState)
       for key, value in pairs(newState) do
@@ -127,13 +133,11 @@ do
         end
       end
       assert(hasEvent, "No such event listener: " .. tostring(event))
-      print(inspect(self.events))
       if id then
         self.events[event][id] = f
       else
-        table.insert(self.events[event], f)
+        return table.insert(self.events[event], f)
       end
-      return print(inspect(self.events))
     end,
     removeEventListener = function(self, eventType, id)
       if self.events[eventType][id] then
@@ -156,33 +160,30 @@ do
         hover = false
       }
       self.style = {
-        m = {
-          3,
-          3,
-          3,
-          3
-        },
-        p = {
-          6,
-          6,
-          6,
-          6
-        },
-        ["background-color"] = {
-          0,
-          0,
-          0,
-          0
-        },
-        ["font-color"] = {
-          1,
-          1,
-          1,
-          1
+        __default = {
+          m = {
+            3,
+            3,
+            3,
+            3
+          },
+          p = {
+            6,
+            6,
+            6,
+            6
+          },
+          background_color = {
+            0,
+            0,
+            0,
+            0
+          },
+          overflow = "visible"
         }
       }
       self.events = {
-        ["mouseEnter"] = {
+        ["mouseenter"] = {
           function(x, y)
             return print("enter", self.id or self.__class.__name, x, y)
           end,
@@ -192,7 +193,7 @@ do
             })
           end
         },
-        ["mouseExit"] = {
+        ["mouseexit"] = {
           function(x, y)
             return print("exit", self.id or self.__class.__name, x, y)
           end,
@@ -207,18 +208,18 @@ do
             })
           end
         },
-        ["mouseMoved"] = { },
-        ["mousePressed"] = {
+        ["mousemoved"] = { },
+        ["mousepressed"] = {
           function(x, y, button)
             return print("click", self.id or self.__class.__name, button, x, y)
           end
         },
-        ["keyPressed"] = {
+        ["keypressed"] = {
           function(k)
             return print("press", self.id or self.__class.__name, k)
           end
         },
-        ["keyReleased"] = { }
+        ["keyreleased"] = { }
       }
     end,
     __base = _base_0,
